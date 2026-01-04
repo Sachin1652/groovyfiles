@@ -1,10 +1,12 @@
 def call(String projectName, String projectKey) {
-    withSonarQubeEnv('sonar') {
-        sh """
-            \$SCANNER_HOME/bin/sonar-scanner \
+
+    stage('SonarQube Analysis') {
+        withSonarQubeEnv('sonar') {
+            sh """
+            mvn sonar:sonar \
             -Dsonar.projectName=${projectName} \
-            -Dsonar.projectKey=${projectKey} \
-            -Dsonar.java.binaries=.
-        """
+            -Dsonar.projectKey=${projectKey}
+            """
+        }
     }
 }
