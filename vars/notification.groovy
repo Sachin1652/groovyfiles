@@ -1,4 +1,5 @@
 def call(String status) {
+
     emailext(
         subject: "Spring3Hibernate Build - ${status}",
         body: """
@@ -8,6 +9,6 @@ def call(String status) {
         <p>URL: ${env.BUILD_URL}</p>
         """,
         mimeType: 'text/html',
-        to: 'team@example.com'
+        to: 'sachinraj1652@gmail.com'
     )
 }
