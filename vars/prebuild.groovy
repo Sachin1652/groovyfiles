@@ -1,6 +1,7 @@
-def call(String repoUrl){
-  stage('Git Checkout') {
-        git repoUrl
+def call(String repoUrl) {
+
+    stage('Git Checkout') {
+        git url: repoUrl
     }
 
     stage('Code Compile') {
