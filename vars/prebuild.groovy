@@ -4,11 +4,15 @@ def call(String repoUrl) {
         git url: repoUrl
     }
 
-    stage('Code Compile') {
+    stage('Compile') {
         sh 'mvn clean compile'
     }
 
-    stage('Unit Tests') {
+    stage('Test') {
         sh 'mvn test'
+    }
+
+    stage('Package') {
+        sh 'mvn package'
     }
 }
