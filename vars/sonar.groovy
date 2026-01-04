@@ -2,16 +2,20 @@ def call(String projectName, String projectKey) {
 
     stage('SonarQube Analysis') {
 
-        // Resolve Sonar Scanner tool path from Jenkins
         def scannerHome = tool 'sonar-scanner'
 
         withSonarQubeEnv('sonar-scanner') {
             sh """
+            export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+            export PATH=\$JAVA_HOME/bin:\$PATH
+
+            java -version
+
             ${scannerHome}/bin/sonar-scanner \
-            -Dsonar.projectName=${projectName} \
-            -Dsonar.projectKey=${projectKey} \
-            -Dsonar.sources=. \
-            -Dsonar.java.binaries=target
+              -Dsonar.projectName=${projectName} \
+              -Dsonar.projectKey=${projectKey} \
+              -Dsonar.sources=. \
+              -Dsonar.java.binaries=target
             """
         }
     }
