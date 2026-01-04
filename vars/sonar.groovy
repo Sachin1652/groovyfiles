@@ -1,7 +1,7 @@
 def call(String projectName, String projectKey) {
 
     stage('SonarQube Analysis') {
-        withSonarQubeEnv('sonar') {
+        withSonarQubeEnv('sonar-scanner') {
             sh """
             sonar-scanner \
             -Dsonar.projectName=${projectName} \
