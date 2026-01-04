@@ -1,13 +1,11 @@
 def call() {
-
-    stage('Package') {
-        sh 'mvn clean package -DskipTests'
-    }
-
     stage('Deploy Application') {
         sh '''
-        echo "Deploying Spring3Hibernate WAR"
-        cp target/*.war /opt/tomcat/webapps/
+        echo "Deploying WAR to Tomcat"
+
+        cp target/Spring3HibernateApp.war /var/lib/tomcat9/webapps/
+
+        systemctl restart tomcat9
         '''
     }
 }
