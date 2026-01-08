@@ -1,9 +1,41 @@
 def call(String status) {
 
-    slackSend channel: '#notifications',
-              message: "Build ${status}: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+    // Colors for Slack
+    def color = (status == 'SUCCESS') ? 'good' : 'danger'
+    def emoji = (status == 'SUCCESS') ? '✅' : '❌'
 
-    mail to: 'sachinraj1652@gmail.com',
-         subject: "Build ${status}: ${env.JOB_NAME}",
-         body: "Job: ${env.JOB_NAME}\nBuild: ${env.BUILD_NUMBER}\nStatus: ${status}"
+    /* =========================
+       SLACK NOTIFICATION
+    ========================== */
+    slackSend(
+        channel: '#notifications',
+        color: color,
+        message: """
+${emoji} *Build ${status}*
+*Job:* ${env.JOB_NAME}
+*Build Number:* ${env.BUILD_NUMBER}
+*Build URL:* ${env.BUILD_URL}
+"""
+    )
+
+    /* =========================
+       EMAIL NOTIFICATION
+    ========================== */
+    mail(
+        to: 'sachinraj1652@gmail.com',
+        subject: "${emoji} Build ${status}: ${env.JOB_NAME}",
+        body: """
+Hello Team,
+
+Build Status: ${status}
+Job Name    : ${env.JOB_NAME}
+Build No    : ${env.BUILD_NUMBER}
+
+Build URL:
+${env.BUILD_URL}
+
+Regards,
+Jenkins CI
+"""
+    )
 }
