@@ -1,4 +1,6 @@
 def call() {
     sh 'mvn package'
-    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+    archiveArtifacts artifacts: 'target/*.war,target/*.jar',
+                     fingerprint: true,
+                     allowEmptyArchive: false
 }
