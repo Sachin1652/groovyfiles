@@ -38,23 +38,23 @@ def call() {
                              accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                              secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']
                         ]) {
-                            sh '''
+                            sh """
                             echo "Testing AWS credentials..."
                             aws sts get-caller-identity
 
-                            export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-                            export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-                            export AWS_DEFAULT_REGION='"${config.AWS_REGION}"'
+                            export AWS_ACCESS_KEY_ID=\$AWS_ACCESS_KEY_ID
+                            export AWS_SECRET_ACCESS_KEY=\$AWS_SECRET_ACCESS_KEY
+                            export AWS_DEFAULT_REGION=${config.AWS_REGION}
 
                             echo "Checking inventory..."
-                            ansible-inventory -i '"${config.INVENTORY}"' --graph
+                            ansible-inventory -i ${config.INVENTORY} --graph
 
                             echo "Running Ansible Playbook..."
-                            ansible-playbook '"${config.PLAYBOOK}"' \
-                              -i '"${config.INVENTORY}"' \
-                              -u '"${config.SSH_USER}"' \
-                              --private-key '"${config.SSH_KEY}"'
-                            '''
+                            ansible-playbook ${config.PLAYBOOK} \
+                              -i ${config.INVENTORY} \
+                              -u ${config.SSH_USER} \
+                              --private-key ${config.SSH_KEY}
+                            """
                         }
                     }
                 }
