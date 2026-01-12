@@ -1,80 +1,85 @@
 def call(Map config = [:]) {
 
-    def props = readProperties file: config.configFile ?: 'ansible-config.properties'
-
-    def SLACK_CHANNEL_NAME  = props.SLACK_CHANNEL_NAME
-    def ENVIRONMENT         = props.ENVIRONMENT
-    def CODE_BASE_PATH      = props.CODE_BASE_PATH
-    def ACTION_MESSAGE      = props.ACTION_MESSAGE
-    def KEEP_APPROVAL_STAGE = props.KEEP_APPROVAL_STAGE.toBoolean()
-
     pipeline {
         agent any
 
         environment {
-            AWS_DEFAULT_REGION = 'ap-south-1'
             ANSIBLE_FORCE_COLOR = 'true'
             ANSIBLE_HOST_KEY_CHECKING = 'False'
+            AWS_DEFAULT_REGION = config.AWS_REGION
+            SLACK_CHANNEL = config.SLACK_CHANNEL_NAME
         }
 
         stages {
 
-            stage('Clone') {
+            /* ---------- CLONE ---------- */
+            stage('Clone Repository') {
                 steps {
-                    echo "Cloning repository..."
                     checkout scm
                 }
             }
 
+            /* ---------- USER APPROVAL ---------- */
             stage('User Approval') {
                 when {
-                    expression { KEEP_APPROVAL_STAGE == true }
+                    expression { return config.KEEP_APPROVAL_STAGE == true }
                 }
                 steps {
-                    input message: "Approve Ansible execution for ${ENVIRONMENT} environment?"
+                    input message: "Approve deployment to ${config.ENVIRONMENT} environment?"
                 }
             }
 
-            stage('Playbook Execution') {
+            /* ---------- PLAYBOOK EXECUTION ---------- */
+            stage('Run Ansible Playbook') {
                 steps {
-                    dir(CODE_BASE_PATH) {
+                    dir(config.ANSIBLE_DIR) {
                         withCredentials([
                             [$class: 'AmazonWebServicesCredentialsBinding',
                              credentialsId: 'aws-cred',
                              accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                              secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']
                         ]) {
-                            sh '''
-                            export LANG=en_US.UTF-8
-                            export LC_ALL=en_US.UTF-8
-                            ansible-playbook playbook.yml \
-                              -i aws_ec2.aws_ec2.yml \
-                              -u ubuntu \
-                              --private-key ~/.ssh/aws2.pem
-                            '''
+                            sh """
+                            ansible-playbook ${config.PLAYBOOK} \
+                              -i ${config.INVENTORY} \
+                              -u ${config.SSH_USER} \
+                              --private-key ${config.SSH_KEY}
+                            """
                         }
                     }
                 }
             }
         }
 
+        /* ---------- NOTIFICATION ---------- */
         post {
             always {
                 script {
                     def status = currentBuild.result ?: "SUCCESS"
-                    def color  = status == "SUCCESS" ? "good" : "danger"
-                    def emoji  = status == "SUCCESS" ? ":white_check_mark:" : ":x:"
+                    def color = status == "SUCCESS" ? "good" : "danger"
+                    def emoji = status == "SUCCESS" ? ":white_check_mark:" : ":x:"
+
+                    emailext(
+                        subject: "Ansible Job - ${env.JOB_NAME} #${env.BUILD_NUMBER} - ${status}",
+                        body: """
+                        Job: ${env.JOB_NAME}
+                        Build: ${env.BUILD_NUMBER}
+                        Status: ${status}
+                        URL: ${env.BUILD_URL}
+                        """,
+                        to: config.EMAIL
+                    )
 
                     slackSend(
-                        channel: "#${SLACK_CHANNEL_NAME}",
+                        channel: config.SLACK_CHANNEL_NAME,
                         color: color,
                         message: """
-${emoji} *Ansible Shared Library Notification*
-*Environment:* ${ENVIRONMENT}
+${emoji} *Ansible Pipeline Status*
+*Environment:* ${config.ENVIRONMENT}
 *Status:* ${status}
-*Message:* ${ACTION_MESSAGE}
+*Message:* ${config.ACTION_MESSAGE}
 
-🔗 <${BUILD_URL}|View Build>
+🔗 <${env.BUILD_URL}|Console Output>
 """
                     )
                 }
