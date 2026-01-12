@@ -1,13 +1,15 @@
 SLACK_CHANNEL_NAME: "build-status"
 ENVIRONMENT: "prod"
 CODE_BASE_PATH: "env/prod"
-ACTION_MESSAGE: "Ansible deployment pipeline execution"
+ACTION_MESSAGE: "Ansible deployment started"
 KEEP_APPROVAL_STAGE: true
 
 AWS_REGION: "ap-south-1"
+
 ANSIBLE_DIR: "ansible_assignment05"
 PLAYBOOK: "playbook.yml"
 INVENTORY: "aws_ec2.aws_ec2.yml"
 SSH_USER: "ubuntu"
-SSH_KEY: "~/.ssh/aws2.pem"
+SSH_KEY: "/var/lib/jenkins/.ssh/aws2.pem"
+
 EMAIL: "sachinraj1652@gmail.com"
