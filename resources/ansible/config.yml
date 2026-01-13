@@ -13,3 +13,4 @@ ANSIBLE:
   PLAYBOOK: playbook.yml
   INVENTORY: aws_ec2.aws_ec2.yml
   FORKS: 5
+  SSH: "/var/lib/jenkins/.ssh/aws2.pem"
