@@ -1,0 +1,15 @@
+SLACK_CHANNEL_NAME: build-status
+ENVIRONMENT: prod
+CODE_BASE_PATH: ansible_assignment05
+ACTION_MESSAGE: "Ansible deployment for Assignment5"
+KEEP_APPROVAL_STAGE: true
+
+GIT:
+  URL: https://github.com/Sachin1652/ansible_assignmnets.git
+  BRANCH: main
+  CREDENTIALS_ID: github-cred
+
+ANSIBLE:
+  PLAYBOOK: playbook.yml
+  INVENTORY: ansible_assignment05/aws_ec2.aws_ec2.yml
+  FORKS: 5
