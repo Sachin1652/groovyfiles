@@ -38,18 +38,13 @@ def call() {
 
         post {
             success {
-                notifySlack(
-                    cfg.SLACK_CHANNEL_NAME,
-                    cfg.ACTION_MESSAGE,
-                    "SUCCESS"
-                )
+                notification1("SUCCESS")
             }
             failure {
-                notifySlack(
-                    cfg.SLACK_CHANNEL_NAME,
-                    cfg.ACTION_MESSAGE,
-                    "FAILED"
-                )
+                notification1("FAILURE")
+            }
+            unstable {
+                notification1("UNSTABLE")
             }
             always {
                 cleanWs()
