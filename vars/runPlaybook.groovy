@@ -10,6 +10,7 @@ def call(Map cfg) {
               ansible-playbook ${cfg.ANSIBLE.PLAYBOOK} \
               -i ${cfg.ANSIBLE.INVENTORY} \
               -f ${cfg.ANSIBLE.FORKS}
+              --private-key ${cfg.ANSIBLE.SSH}
             """
         }
     }
