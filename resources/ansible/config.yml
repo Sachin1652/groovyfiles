@@ -11,5 +11,5 @@ GIT:
 
 ANSIBLE:
   PLAYBOOK: playbook.yml
-  INVENTORY: ansible_assignment05/aws_ec2.aws_ec2.yml
+  INVENTORY: aws_ec2.aws_ec2.yml
   FORKS: 5
