@@ -1,4 +1,4 @@
-SLACK_CHANNEL_NAME: build-status
+SLACK_CHANNEL_NAME: "#notifications"
 ENVIRONMENT: prod
 CODE_BASE_PATH: ansible_assignment05
 ACTION_MESSAGE: "Ansible deployment for Assignment5"
