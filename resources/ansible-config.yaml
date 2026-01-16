@@ -8,7 +8,7 @@ AWS_REGION: "ap-south-1"
 
 ANSIBLE_DIR: "ansible_assignment05"
 PLAYBOOK: "playbook.yml"
-INVENTORY: "aws_ec2.aws_ec2.yml"
+INVENTORY: "1aws_ec2.yml"
 SSH_USER: "ubuntu"
 SSH_KEY: "/var/lib/jenkins/.ssh/aws2.pem"
 
